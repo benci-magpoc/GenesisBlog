@@ -21,5 +21,7 @@ namespace GenesisBlog.Models
 
         public DateTime? Updated { get; set; }
 
+        //Nav props
+        public virtual ICollection<BlogPostComment> BlogPostComments { get; set; } = new HashSet<BlogPostComment>();
     }
 }

@@ -61,6 +61,7 @@ namespace GenesisBlog.Controllers
 
                 return RedirectToAction("Index", "Home");
             }
+           
             return View(blogPost);
         }
 

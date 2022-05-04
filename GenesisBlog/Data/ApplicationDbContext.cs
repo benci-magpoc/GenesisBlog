@@ -10,7 +10,10 @@ namespace GenesisBlog.Data
             : base(options)
         {
         }
+
         public DbSet<BlogPost> BlogPost { get; set; } = default!;
+
+        public DbSet<GenesisBlog.Models.BlogPostComment> BlogPostComment { get; set; }
 
     }
 }

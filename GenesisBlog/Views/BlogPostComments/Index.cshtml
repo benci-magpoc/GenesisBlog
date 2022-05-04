@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GenesisBlog.Models.BlogPost>
+﻿@model IEnumerable<GenesisBlog.Models.BlogPostComment>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,15 +13,11 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Html.DisplayNameFor(model => model.Comment)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Abstract)
+                @Html.DisplayNameFor(model => model.BlogPost)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-           
             <th></th>
         </tr>
     </thead>
@@ -29,16 +25,11 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Title)
+                @Html.DisplayFor(modelItem => item.Comment)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Abstract)
+                @Html.DisplayFor(modelItem => item.BlogPost.Abstract)
             </td>
-            <td>
-                @*@Html.DisplayFor(modelItem => item.Content)*@
-                @Html.Raw(item.Content)
-            </td>
-           
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
