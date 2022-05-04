@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GenesisBlog.Data;
 using GenesisBlog.Models;
+using System.Text;
 
 namespace GenesisBlog.Controllers
 {
@@ -50,11 +51,11 @@ namespace GenesisBlog.Controllers
    
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Abstract,Content,Created,Updated")] BlogPost blogPost)
+        public async Task<IActionResult> Create([Bind("Title,Abstract,Content")] BlogPost blogPost)
         {
             if (ModelState.IsValid)
             {
-                blogPost.Created = DateTime.SpecifyKind(blogPost.Created, DateTimeKind.Utc);
+                blogPost.Created = DateTime.UtcNow;
                 _context.Add(blogPost);
                 await _context.SaveChangesAsync();
 
@@ -66,6 +67,7 @@ namespace GenesisBlog.Controllers
        
         public async Task<IActionResult> Edit(int? id)
         {
+                      
             if (id == null)
             {
                 return NotFound();
@@ -81,7 +83,7 @@ namespace GenesisBlog.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Abstract,Content,Created,Updated")] BlogPost blogPost)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Abstract,Content,Created")] BlogPost blogPost)
         {
             if (id != blogPost.Id)
             {
@@ -92,6 +94,8 @@ namespace GenesisBlog.Controllers
             {
                 try
                 {
+                    blogPost.Created = DateTime.SpecifyKind(blogPost.Created, DateTimeKind.Utc);
+                    blogPost.Updated = DateTime.UtcNow;
                     _context.Update(blogPost);
                     await _context.SaveChangesAsync();
                 }
