@@ -32,12 +32,13 @@
            <div class="form-group">
                 <label asp-for="Content" class="control-label"></label>
                 <div id="quillEditor"></div>
-                <input type="hidden" asp-for="Content"/>
-           </div>
+                <span asp-validation-for="Content" class="text-danger"></span>
+                <input type="hidden" asp-for="Content" />      
+            </div>
 
             @* This is here in order to be able to programmatically copy the Quill data into
             so that it gets submitted to the HttpPost using the Content name *@            
-            <input id="target" type="hidden" name="Content"/>
+          @*  <input id="target" type="hidden" name="Content"/>*@
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

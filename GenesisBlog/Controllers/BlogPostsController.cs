@@ -15,10 +15,13 @@ namespace GenesisBlog.Controllers
     public class BlogPostsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        //private readonly IConfiguration _configuration;
 
+        //public BlogPostsController(ApplicationDbContext context, IConfiguration configuration)
         public BlogPostsController(ApplicationDbContext context)
         {
             _context = context;
+            //_configuration = configuration;
         }
 
         public async Task<IActionResult> Index()
@@ -53,8 +56,34 @@ namespace GenesisBlog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Abstract,Content")] BlogPost blogPost)
         {
+            //Ill check with the Model annotations to see if anything has been violated
             if (ModelState.IsValid)
             {
+
+                //Because we can't properly encode the validation of the incoming Quill data
+                //we have to rely on using custom error handling or we have to add a custom error
+
+                //var badContent = _configuration["DefaultSettings:QuillContent"];
+                //if (blogPost.Content == badContent)
+                if (blogPost.Content == "<p><br></p>")
+                {
+                    //The next two lines are for displaying errors in the validation summary
+                    //I know this because there isn't a property used in the method
+                    ModelState.AddModelError("", "Errors in the Content have been detected!");
+                    ModelState.AddModelError("", "Here I am...");
+
+                    //This line of code displays an error message inside of the span
+                    //used for displaying error messgaes associated with the Content property
+                    ModelState.AddModelError("Content", "Hey I saw that you tried to sneak in the default .....");
+                    return View(blogPost);
+                }
+                else if(blogPost.Content == "<p>.</p>")
+                {
+                    ModelState.AddModelError("", "Errors in the Content have been detected!");
+                    ModelState.AddModelError("Content", "Can you please give me something more than that...");
+                    return View(blogPost);
+                }
+
                 blogPost.Created = DateTime.UtcNow;
                 _context.Add(blogPost);
                 await _context.SaveChangesAsync();
@@ -64,8 +93,7 @@ namespace GenesisBlog.Controllers
            
             return View(blogPost);
         }
-
-       
+    
         public async Task<IActionResult> Edit(int? id)
         {
                       
