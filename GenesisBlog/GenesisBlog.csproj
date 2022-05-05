@@ -8,6 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Views\xxxBlogPosts\Create.cshtml" />
+    <None Include="Views\xxxBlogPosts\Delete.cshtml" />
+    <None Include="Views\xxxBlogPosts\Details.cshtml" />
+    <None Include="Views\xxxBlogPosts\Edit.cshtml" />
+    <None Include="Views\xxxBlogPosts\Index.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.4" />

@@ -132,8 +132,8 @@ namespace GenesisBlog.Areas.Identity.Pages.Account
 
                 //This is custom and hands off the user supplied First and Last names to the
                 //BlogUser instance before being registered as a User
-                user.FirstName = Input.FirstName;
-                user.LastName = Input.LastName;
+                 user.FirstName = Input.FirstName;
+                 user.LastName = Input.LastName;
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
