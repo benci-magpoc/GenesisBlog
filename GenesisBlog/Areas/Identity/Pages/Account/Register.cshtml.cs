@@ -71,6 +71,18 @@ namespace GenesisBlog.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
+            //The next two code section are custom and enable the page to collect data for these properties
+            [Required]
+            [Display(Name = "First Name")]
+            [StringLength(40, ErrorMessage = "The {0} must be a minimum of {2} characters and a max of {1}.", MinimumLength = 3)]
+            public string FirstName { get; set; } = string.Empty;
+
+            [Required]
+            [Display(Name = "Last Name")]
+            [StringLength(40, ErrorMessage = "The {0} must be a minimum of {2} characters and a max of {1}.", MinimumLength = 2)]
+            public string LastName { get; set; } = string.Empty;
+
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -117,6 +129,12 @@ namespace GenesisBlog.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                //This is custom and hands off the user supplied First and Last names to the
+                //BlogUser instance before being registered as a User
+                user.FirstName = Input.FirstName;
+                user.LastName = Input.LastName;
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
