@@ -22,8 +22,7 @@ namespace GenesisBlog.Models
 
         public DateTime? Updated { get; set; }
 
-        //This property is derived from the Title. This will eventually be used in some cases INSTEAD of the Primary Key (Id)       
-        [Required]
+        //This property is derived from the Title. This will eventually be used in some cases INSTEAD of the Primary Key (Id)              
         public string Slug { get; set; } = "";
 
         public bool IsDeleted { get; set; }
@@ -36,5 +35,9 @@ namespace GenesisBlog.Models
 
         //Nav props
         public virtual ICollection<BlogPostComment> BlogPostComments { get; set; } = new HashSet<BlogPostComment>();
+  
+
+    
+    
     }
 }

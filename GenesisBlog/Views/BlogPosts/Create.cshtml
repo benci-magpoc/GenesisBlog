@@ -1,4 +1,7 @@
-﻿@model GenesisBlog.Models.BlogPost
+﻿@using GenesisBlog.Models
+@using GenesisBlog.Enums
+
+@model BlogPost
 
 @{
     ViewData["Title"] = "Create";
@@ -11,57 +14,39 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+
+            <div class="form-group mb-5">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Abstract" class="control-label"></label>
-                <input asp-for="Abstract" class="form-control" />
+
+
+            <div class="form-group mb-5">
+                <label asp-for="Abstract" class="control-label"></label>               
+                <textarea asp-for="Abstract" class="form-control" rows=5></textarea>
                 <span asp-validation-for="Abstract" class="text-danger"></span>
             </div>
-            <div class="form-group">
+
+            <div class="form-group mb-5">
                 <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
+                <div id="quillEditor"></div>
                 <span asp-validation-for="Content" class="text-danger"></span>
+                <input type="hidden" asp-for="Content" />      
             </div>
-            <div class="form-group">
-                <label asp-for="Created" class="control-label"></label>
-                <input asp-for="Created" class="form-control" />
-                <span asp-validation-for="Created" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Updated" class="control-label"></label>
-                <input asp-for="Updated" class="form-control" />
-                <span asp-validation-for="Updated" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Slug" class="control-label"></label>
-                <input asp-for="Slug" class="form-control" />
-                <span asp-validation-for="Slug" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
-                </label>
-            </div>
-            <div class="form-group">
+        
+
+@*            Update the select to get its items from the enum*@
+            <div class="form-group mb-5">
                 <label asp-for="BlogPostState" class="control-label"></label>
-                <select asp-for="BlogPostState" class="form-control"></select>
+                <select asp-for="BlogPostState" class="form-control" asp-items="@Html.GetEnumSelectList<BlogPostState>()" ></select>
                 <span asp-validation-for="BlogPostState" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ImageData" class="control-label"></label>
-                <input asp-for="ImageData" class="form-control" />
-                <span asp-validation-for="ImageData" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ImageType" class="control-label"></label>
-                <input asp-for="ImageType" class="form-control" />
-                <span asp-validation-for="ImageType" class="text-danger"></span>
-            </div>
+
+  
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

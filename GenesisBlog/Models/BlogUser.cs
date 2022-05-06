@@ -15,5 +15,7 @@ namespace GenesisBlog.Models
         [StringLength(40, ErrorMessage = "The {0} must be a minimum of {2} characters and a max of {1}.", MinimumLength = 2)]
         public string LastName { get; set; } = string.Empty;
 
+
+        //TODO - Add more user stuff...
     }
 }

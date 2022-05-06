@@ -26,19 +26,12 @@
                 <span asp-validation-for="Abstract" class="text-danger"></span>
             </div>
 
-            @*THIS IS THE START OF THE PROBLEM*@
-           @* <div class="form-group" id="Content"></div>*@
-
            <div class="form-group">
                 <label asp-for="Content" class="control-label"></label>
                 <div id="quillEditor"></div>
                 <span asp-validation-for="Content" class="text-danger"></span>
                 <input type="hidden" asp-for="Content" />      
             </div>
-
-            @* This is here in order to be able to programmatically copy the Quill data into
-            so that it gets submitted to the HttpPost using the Content name *@            
-          @*  <input id="target" type="hidden" name="Content"/>*@
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -60,7 +53,7 @@
         document.querySelector("form").addEventListener("submit", function() {
             
             //Stuff the data currently inside of the Quill editor inside the hidden input the name="Content"
-            document.getElementById("Content").value = quill.container.firstChild.innerHTML;         
+            document.getElementById("Content").value = quill.container.firstChild.innerHTML;   
         })
     </script>
 

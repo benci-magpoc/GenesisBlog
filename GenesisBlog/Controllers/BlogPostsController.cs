@@ -98,6 +98,9 @@ namespace GenesisBlog.Controllers
             {
                 try
                 {
+                    blogPost.Created = DateTime.SpecifyKind(blogPost.Created, DateTimeKind.Utc);
+                    blogPost.Updated = DateTime.UtcNow;
+
                     _context.Update(blogPost);
                     await _context.SaveChangesAsync();
                 }
