@@ -30,7 +30,9 @@ namespace GenesisBlog.Models
         public BlogPostState BlogPostState { get; set; }
 
         //What if I wanted to record an image with a blog post
+        [Display(Name ="Choose Image")]
         public byte[] ImageData { get; set; } = Array.Empty<byte>();
+
         public string ImageType { get; set; } = string.Empty;
 
         //Nav props

@@ -2,6 +2,8 @@ using GenesisBlog.Data;
 using GenesisBlog.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using GenesisBlog.Services;
+using GenesisBlog.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -14,6 +16,10 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<BlogUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+//Register our custom services
+//builder.Services.AddScoped<BasicImageService>();
+builder.Services.AddScoped<IImageService, BasicImageService>();
 
 var app = builder.Build();
 

@@ -1,4 +1,8 @@
-﻿@model IEnumerable<GenesisBlog.Models.BlogPost>
+﻿@using GenesisBlog.Models
+@using GenesisBlog.Services.Interfaces
+
+@model IEnumerable<BlogPost>
+@inject IImageService _imageService
 
 @{
     ViewData["Title"] = "Index";
@@ -12,6 +16,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th></th>
             <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
@@ -23,18 +28,22 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Created)
-            </th>
-           
+            </th>           
             <th>
                 @Html.DisplayNameFor(model => model.BlogPostState)
-            </th>
-           
+            </th>           
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @if(item.ImageData.Length > 0)
+                {
+                    <img src="@_imageService.ConvertByteArrayToFile(item.ImageData, item.ImageType)" class="img-fluid w-50">
+                }
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
             </td>

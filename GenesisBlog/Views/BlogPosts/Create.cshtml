@@ -13,24 +13,23 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group mb-5">
+            <div class="form-group mb-3">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
 
-
-            <div class="form-group mb-5">
+            <div class="form-group mb-3">
                 <label asp-for="Abstract" class="control-label"></label>               
                 <textarea asp-for="Abstract" class="form-control" rows=5></textarea>
                 <span asp-validation-for="Abstract" class="text-danger"></span>
             </div>
 
-            <div class="form-group mb-5">
+            <div class="form-group mb-3">
                 <label asp-for="Content" class="control-label"></label>
                 <div id="quillEditor"></div>
                 <span asp-validation-for="Content" class="text-danger"></span>
@@ -39,13 +38,19 @@
         
 
 @*            Update the select to get its items from the enum*@
-            <div class="form-group mb-5">
+            <div class="form-group mb-3">
                 <label asp-for="BlogPostState" class="control-label"></label>
                 <select asp-for="BlogPostState" class="form-control" asp-items="@Html.GetEnumSelectList<BlogPostState>()" ></select>
                 <span asp-validation-for="BlogPostState" class="text-danger"></span>
             </div>
 
-  
+             <div class="form-group mb-3">
+                <label asp-for="ImageData" class="control-label"></label>
+                <input name="TheImage" type="file" class="form-control" accept=".jpg,.png,.gif"/>           
+                <span asp-validation-for="ImageData" class="text-danger"></span>
+            </div>
+
+
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

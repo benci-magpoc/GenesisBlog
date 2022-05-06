@@ -8,27 +8,33 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GenesisBlog.Data;
 using GenesisBlog.Models;
+using GenesisBlog.Services;
+using GenesisBlog.Services.Interfaces;
 
 namespace GenesisBlog.Controllers
 {
     public class BlogPostsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IImageService _imageService;
 
-        public BlogPostsController(ApplicationDbContext context)
+        public BlogPostsController(ApplicationDbContext context, IImageService imageService)
         {
             _context = context;
+            _imageService = imageService;
         }
 
         // GET: BlogPosts
         public async Task<IActionResult> Index()
         {
-            return View(await _context.BlogPost.ToListAsync());
+            var posts = await _context.BlogPost.ToListAsync();
+            return View(posts);
         }
 
         // GET: BlogPosts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+       
             if (id == null)
             {
                 return NotFound();
@@ -55,10 +61,18 @@ namespace GenesisBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Abstract,Content,Created,Updated,Slug,IsDeleted,BlogPostState,ImageData,ImageType")] BlogPost blogPost)
+        public async Task<IActionResult> Create([Bind("Id,Title,Abstract,Content,Created,Updated,Slug,IsDeleted,BlogPostState")] BlogPost blogPost, IFormFile theImage)
         {
             if (ModelState.IsValid)
             {
+                //Before I try interacting with the IFormFile
+                //I should make sure it's present
+                if(theImage is not null)
+                {
+                    blogPost.ImageData = await _imageService.ConvertFileToByteArrayAsync(theImage);
+                    blogPost.ImageType = theImage.ContentType;
+                }
+
                 _context.Add(blogPost);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
