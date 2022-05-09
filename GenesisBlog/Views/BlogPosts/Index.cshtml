@@ -20,6 +20,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
+             <th>  
+                 @Html.DisplayNameFor(model => model.Tags)
+             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Abstract)
             </th>
@@ -47,6 +50,14 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
+
+            <td>
+                    @foreach(var tag in item.Tags )
+                    {
+                        @tag.Text<br>
+                    }
+            </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.Abstract)
             </td>

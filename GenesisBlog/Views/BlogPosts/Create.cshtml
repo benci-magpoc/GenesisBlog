@@ -36,8 +36,6 @@
                 <input type="hidden" asp-for="Content" />      
             </div>
         
-
-@*            Update the select to get its items from the enum*@
             <div class="form-group mb-3">
                 <label asp-for="BlogPostState" class="control-label"></label>
                 <select asp-for="BlogPostState" class="form-control" asp-items="@Html.GetEnumSelectList<BlogPostState>()" ></select>
@@ -50,7 +48,10 @@
                 <span asp-validation-for="ImageData" class="text-danger"></span>
             </div>
 
-
+             <div class="form-group">
+                <label asp-for="Tags" class="control-label"></label>
+                <select  name="TagIds" class ="form-control" asp-items="ViewBag.TagIds" multiple></select>
+            </div>
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

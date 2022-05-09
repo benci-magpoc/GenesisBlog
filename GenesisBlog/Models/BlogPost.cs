@@ -37,9 +37,7 @@ namespace GenesisBlog.Models
 
         //Nav props
         public virtual ICollection<BlogPostComment> BlogPostComments { get; set; } = new HashSet<BlogPostComment>();
-  
+        public virtual ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
 
-    
-    
     }
 }

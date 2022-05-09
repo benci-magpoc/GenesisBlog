@@ -27,7 +27,11 @@ namespace GenesisBlog.Controllers
         // GET: BlogPosts
         public async Task<IActionResult> Index()
         {
-            var posts = await _context.BlogPost.ToListAsync();
+            //var posts = await _context.BlogPost.ToListAsync();
+            var posts = await _context.BlogPost
+                                                  .Include(b => b.Tags)
+                                                  .ToListAsync();
+
             return View(posts);
         }
 
@@ -53,6 +57,11 @@ namespace GenesisBlog.Controllers
         // GET: BlogPosts/Create
         public IActionResult Create()
         {
+            //1: What data does the select list contain
+            //2. The property that gets transmitted to HttpPost
+            //3. The property that gets shown to the user
+            ViewData["TagIds"] = new MultiSelectList(_context.Tag, "Id", "Text");
+          
             return View();
         }
 
@@ -61,7 +70,7 @@ namespace GenesisBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Abstract,Content,Created,Updated,Slug,IsDeleted,BlogPostState")] BlogPost blogPost, IFormFile theImage)
+        public async Task<IActionResult> Create([Bind("Id,Title,Abstract,Content,Created,Updated,Slug,IsDeleted,BlogPostState")] BlogPost blogPost, IFormFile theImage, List<int> tagIds)
         {
             if (ModelState.IsValid)
             {
@@ -71,6 +80,12 @@ namespace GenesisBlog.Controllers
                 {
                     blogPost.ImageData = await _imageService.ConvertFileToByteArrayAsync(theImage);
                     blogPost.ImageType = theImage.ContentType;
+                }
+
+                //Associate any/all selected tags with the BlogPost
+                foreach(var tagId in tagIds)
+                {               
+                    blogPost.Tags.Add(await _context.Tag.FindAsync(tagId));                
                 }
 
                 _context.Add(blogPost);
@@ -88,11 +103,19 @@ namespace GenesisBlog.Controllers
                 return NotFound();
             }
 
-            var blogPost = await _context.BlogPost.FindAsync(id);
+            var blogPost = await _context.BlogPost
+                                                      .Include(b => b.Tags)
+                                                      .FirstOrDefaultAsync(b => b.Id == id);
+
             if (blogPost == null)
             {
                 return NotFound();
             }
+
+            //4th parameter in a multiSelect list is a List<int> representing the current selection
+            var tagPks = blogPost.Tags.Select(b => b.Id).ToList();
+            ViewData["TagIds"] = new MultiSelectList(_context.Tag, "Id", "Text", tagPks);
+
             return View(blogPost);
         }
 
@@ -101,7 +124,7 @@ namespace GenesisBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Abstract,Content,Created,Updated,Slug,IsDeleted,BlogPostState,ImageData,ImageType")] BlogPost blogPost)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Abstract,Content,Created,Updated,Slug,IsDeleted,BlogPostState,ImageData,ImageType")] BlogPost blogPost, IFormFile file, List<int> tagIds)
         {
             if (id != blogPost.Id)
             {
@@ -114,6 +137,16 @@ namespace GenesisBlog.Controllers
                 {
                     blogPost.Created = DateTime.SpecifyKind(blogPost.Created, DateTimeKind.Utc);
                     blogPost.Updated = DateTime.UtcNow;
+
+
+                    //Step 1: Delete all of the Tags associated with this blogPost
+                    //Somehow remove or delete all of the existing tags for this post
+
+                    //Step 2: Add all the selected tags back
+                    foreach (var tagId in tagIds)
+                    {
+                        blogPost.Tags.Add(await _context.Tag.FindAsync(tagId));
+                    }
 
                     _context.Update(blogPost);
                     await _context.SaveChangesAsync();
@@ -131,6 +164,8 @@ namespace GenesisBlog.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewData["TagIds"] = new MultiSelectList(_context.Tag, "Id", "Text", tagIds);
             return View(blogPost);
         }
 

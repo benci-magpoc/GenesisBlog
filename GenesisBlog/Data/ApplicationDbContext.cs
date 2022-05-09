@@ -13,7 +13,9 @@ namespace GenesisBlog.Data
 
         public DbSet<BlogPost> BlogPost { get; set; } = default!;
 
-        public DbSet<GenesisBlog.Models.BlogPostComment> BlogPostComment { get; set; }
+        public DbSet<BlogPostComment> BlogPostComment { get; set; } = default!;
+
+        public DbSet<Tag> Tag { get; set; } = default!;
 
     }
 }
