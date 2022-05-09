@@ -124,7 +124,7 @@ namespace GenesisBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Abstract,Content,Created,Updated,Slug,IsDeleted,BlogPostState,ImageData,ImageType")] BlogPost blogPost, IFormFile file, List<int> tagIds)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Abstract,Content,BlogPostState")] BlogPost blogPost, IFormFile file, List<int> tagIds)
         {
             if (id != blogPost.Id)
             {
@@ -135,20 +135,31 @@ namespace GenesisBlog.Controllers
             {
                 try
                 {
-                    blogPost.Created = DateTime.SpecifyKind(blogPost.Created, DateTimeKind.Utc);
-                    blogPost.Updated = DateTime.UtcNow;
+                    //This code gets whats known as a "Tracked entity". By default, most LINQ
+                    //statement that pull data from a DB are tracked. In fact, if you don't it tracked
+                    //you have to use extra code to tell it so.. AsNoTracking()
+                    var existingPost = await _context.BlogPost
+                                                            .Include(b => b.Tags)                                                         
+                                                            .FirstOrDefaultAsync(b => b.Id == blogPost.Id);
+                 
+                    existingPost.Tags.Clear();             
+                    await _context.SaveChangesAsync();
 
-
-                    //Step 1: Delete all of the Tags associated with this blogPost
-                    //Somehow remove or delete all of the existing tags for this post
-
-                    //Step 2: Add all the selected tags back
+                    //Continue on making the requested user changes
+                    //Since I already have a tracked entity named existingPost I will
+                    //copy over the incoming form values
+                    existingPost.Updated = DateTime.UtcNow;
+                    existingPost.Title = blogPost.Title;
+                    existingPost.Abstract = blogPost.Abstract;
+                    existingPost.Content = blogPost.Content;
+                    existingPost.BlogPostState = blogPost.BlogPostState;
+                 
+                    //Add all the selected tags back
                     foreach (var tagId in tagIds)
                     {
-                        blogPost.Tags.Add(await _context.Tag.FindAsync(tagId));
+                        existingPost.Tags.Add(await _context.Tag.FindAsync(tagId));
                     }
 
-                    _context.Update(blogPost);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
