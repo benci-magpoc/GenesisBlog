@@ -1,9 +1,10 @@
 ﻿using GenesisBlog.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GenesisBlog.Models
 {
-    public class BlogPost
+    public partial class BlogPost
     {
         public int Id { get; set; }
 
@@ -34,6 +35,10 @@ namespace GenesisBlog.Models
         public byte[] ImageData { get; set; } = Array.Empty<byte>();
 
         public string ImageType { get; set; } = string.Empty;
+
+        [NotMapped]
+        [Display(Name ="Choose an image")]
+        public IFormFile? ImageFile { get; set; }
 
         //Nav props
         public virtual ICollection<BlogPostComment> BlogPostComments { get; set; } = new HashSet<BlogPostComment>();

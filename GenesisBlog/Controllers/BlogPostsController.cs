@@ -71,7 +71,7 @@ namespace GenesisBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Abstract,Content,BlogPostState")] BlogPost blogPost, IFormFile theImage, List<int> tagIds)
+        public async Task<IActionResult> Create([Bind("Title,Abstract,Content,BlogPostState,ImageFile")] BlogPost blogPost, List<int> tagIds)
         {
             if (ModelState.IsValid)
             {
@@ -92,10 +92,10 @@ namespace GenesisBlog.Controllers
              
                 //Before I try interacting with the IFormFile
                 //I should make sure it's present
-                if (theImage is not null)
+                if (blogPost.ImageFile is not null)
                 {
-                    blogPost.ImageData = await _imageService.ConvertFileToByteArrayAsync(theImage);
-                    blogPost.ImageType = theImage.ContentType;
+                    blogPost.ImageData = await _imageService.ConvertFileToByteArrayAsync(blogPost.ImageFile);
+                    blogPost.ImageType = blogPost.ImageFile.ContentType;
                 }
 
                 //Associate any/all selected tags with the BlogPost
@@ -108,6 +108,8 @@ namespace GenesisBlog.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewData["TagIds"] = new MultiSelectList(_context.Tag, "Id", "Text", tagIds);
             return View(blogPost);
         }
 
@@ -140,7 +142,7 @@ namespace GenesisBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Abstract,Content,BlogPostState")] BlogPost blogPost, IFormFile file, List<int> tagIds)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Abstract,Content,BlogPostState,ImageFile")] BlogPost blogPost, List<int> tagIds)
         {
             if (id != blogPost.Id)
             {
@@ -169,7 +171,15 @@ namespace GenesisBlog.Controllers
                             return View(blogPost);
                         }                     
                     }
-              
+
+                    //Before I try interacting with the IFormFile
+                    //I should make sure it's present
+                    if (blogPost.ImageFile is not null)
+                    {
+                        blogPost.ImageData = await _imageService.ConvertFileToByteArrayAsync(blogPost.ImageFile);
+                        blogPost.ImageType = blogPost.ImageFile.ContentType;
+                    }
+
                     existingPost.Tags.Clear();             
                     await _context.SaveChangesAsync();
 
@@ -204,6 +214,7 @@ namespace GenesisBlog.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
 
             ViewData["TagIds"] = new MultiSelectList(_context.Tag, "Id", "Text", tagIds);
             return View(blogPost);
