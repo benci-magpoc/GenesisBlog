@@ -1,8 +1,10 @@
 ﻿@model BlogPost
 
 @{
-    ViewData["Title"] = Model.Title;
+    ViewData["Title"] = "Details";
+    ViewData["BlogPostTitle"] = Model.Title;  
     ViewData["Abstract"] = Model.Abstract;  
+    ViewData["Created"] = Model.Created.ToString("MMM dd, yyyy");  
 }
 
 <!-- Post Content-->
