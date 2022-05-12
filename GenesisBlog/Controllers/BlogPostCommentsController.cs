@@ -4,16 +4,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GenesisBlog.Data;
 using GenesisBlog.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace GenesisBlog.Controllers
 {
     public class BlogPostCommentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<BlogUser> _userManager;
 
-        public BlogPostCommentsController(ApplicationDbContext context)
+        public BlogPostCommentsController(ApplicationDbContext context, UserManager<BlogUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: BlogPostComments
@@ -42,25 +45,22 @@ namespace GenesisBlog.Controllers
             return View(blogPostComment);
         }
 
-        // GET: BlogPostComments/Create
-        public IActionResult Create()
-        {
-            ViewData["BlogPostId"] = new SelectList(_context.BlogPost, "Id", "Abstract");
-            return View();
-        }
-
         // POST: BlogPostComments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,BlogPostId,Comment")] BlogPostComment blogPostComment)
+        public async Task<IActionResult> Create([Bind("BlogPostId,Comment")] BlogPostComment blogPostComment)
         {
             if (ModelState.IsValid)
             {
+                blogPostComment.Created = DateTime.UtcNow;
+                blogPostComment.AuthorId = _userManager.GetUserId(User);
+
                 _context.Add(blogPostComment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();              
+                return RedirectToAction("Details", "BlogPosts", new { Id = blogPostComment.BlogPostId });
+
             }
             ViewData["BlogPostId"] = new SelectList(_context.BlogPost, "Id", "Abstract", blogPostComment.BlogPostId);
             return View(blogPostComment);

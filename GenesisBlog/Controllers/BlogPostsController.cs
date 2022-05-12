@@ -45,8 +45,11 @@ namespace GenesisBlog.Controllers
                 return NotFound();
             }
 
-            var blogPost = await _context.BlogPost
+            var blogPost = await _context.BlogPost               
+                .Include(b => b.BlogPostComments)
+                .ThenInclude(c => c.Author)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (blogPost == null)
             {
                 return NotFound();
